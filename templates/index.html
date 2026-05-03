@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Resume Analyzer</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header>
+<h1>RESUME<span>AI</span></h1>
+</header>
+
+<div class="hero">
+<h2>Analyze Your Resume with AI 🚀</h2>
+
+<form method="POST" enctype="multipart/form-data">
+<input type="file" name="resume" required>
+<button type="submit">Analyze</button>
+</form>
+</div>
+
+{% if data %}
+<div class="dashboard">
+
+<div class="card">
+<h3>Name</h3>
+<p>{{ data.name }}</p>
+</div>
+
+<div class="card">
+<h3>Match Score</h3>
+<h1>{{ data.score }}%</h1>
+</div>
+
+<div class="card">
+<h3>Skills</h3>
+<ul>
+{% for s in data.skills %}
+<li>{{ s }}</li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="card">
+<h3>Missing Skills</h3>
+<ul>
+{% for s in data.missing %}
+<li>{{ s }}</li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="card">
+<h3>Job Recommendations</h3>
+<ul>
+{% for job,score in data.jobs %}
+<li>{{ job }} - {{ score }}%</li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="card">
+<h3>Feedback</h3>
+<p>{{ data.feedback }}</p>
+</div>
+
+<div class="card">
+<canvas id="chart"></canvas>
+</div>
+
+</div>
+
+<script>
+new Chart(document.getElementById("chart"), {
+    type: "doughnut",
+    data: {
+        labels: ["Matched", "Missing"],
+        datasets: [{
+            data: [{{ data.score }}, {{ 100 - data.score }}],
+            backgroundColor: ["#E50914", "#444"]
+        }]
+    }
+});
+</script>
+
+{% endif %}
+
+</body>
+</html>
